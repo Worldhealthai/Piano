@@ -51,26 +51,20 @@ export function usePianoAudio() {
     try {
       await Tone.start();
 
-      // Try to load sampler
+      // Audio context is running — immediately mark ready so overlay disappears
+      // Sampler loads in background; synth fires if sampler fails
+      initFallbackSynth(); // start with synth immediately (instant sound)
+
+      // Also try to load high-quality sampler (will replace synth when ready)
       samplerInstance = new Tone.Sampler({
         urls: SAMPLE_NOTES,
         onload: () => {
           usingSampler = true;
-          audioInitialized = true;
-          setAudioReady(true);
         },
         onerror: () => {
-          // Fallback to synth
-          initFallbackSynth();
+          // Keep using fallback synth — already initialized
         },
       }).toDestination();
-
-      // Give sampler 5 seconds to load, fallback if it doesn't
-      setTimeout(() => {
-        if (!audioInitialized) {
-          initFallbackSynth();
-        }
-      }, 5000);
     } catch {
       initFallbackSynth();
     }
@@ -80,14 +74,14 @@ export function usePianoAudio() {
     if (audioInitialized) return;
     try {
       fallbackSynth = new Tone.PolySynth(Tone.Synth, {
-        oscillator: { type: 'triangle' },
+        oscillator: { type: 'triangle8' },
         envelope: {
-          attack: 0.01,
-          decay: 0.3,
-          sustain: 0.4,
-          release: 1.2,
+          attack: 0.005,
+          decay: 0.4,
+          sustain: 0.3,
+          release: 1.5,
         },
-        volume: -6,
+        volume: -8,
       }).toDestination();
       audioInitialized = true;
       usingSampler = false;
