@@ -5,6 +5,7 @@ import { FallingNotes } from './FallingNotes';
 import { Piano } from './Piano';
 import { TempoControl } from './TempoControl';
 import { ScoreDisplay, FinalScore } from './ScoreDisplay';
+import { ChordInfo } from './ChordInfo';
 import { usePianoAudio } from '../hooks/usePianoAudio';
 import { useMidi } from '../hooks/useMidi';
 import { useKeyboard } from '../hooks/useKeyboard';
@@ -154,7 +155,12 @@ export const PracticeView: React.FC = () => {
           </div>
         )}
 
-        {/* Score */}
+        {/* Chord info — top left */}
+        <div className="chord-info-overlay">
+          <ChordInfo />
+        </div>
+
+        {/* Score — top right */}
         <div className="score-overlay">
           <ScoreDisplay />
         </div>
