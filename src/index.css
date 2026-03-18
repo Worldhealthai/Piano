@@ -579,6 +579,14 @@ body {
   font-weight: 500;
 }
 
+.chord-info-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 5;
+  max-width: 220px;
+}
+
 .score-overlay {
   position: absolute;
   top: 1rem;
@@ -824,27 +832,88 @@ body {
   animation: glowPulse 1s ease-in-out infinite;
 }
 
-/* Key Labels */
+/* ─── Key Labels (Synthesia-style) ───────────────────────────── */
+
+/* White key: bottom label container */
+.key-bottom-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  pointer-events: none;
+}
+
 .key-label {
   font-family: 'Space Mono', monospace;
   text-align: center;
   pointer-events: none;
-}
-
-.key-label--white {
-  font-size: 0.55rem;
-  color: rgba(0,0,0,0.35);
   line-height: 1;
+  user-select: none;
 }
 
-.light .key-label--white {
-  color: rgba(0,0,0,0.4);
+/* Note letter on white key — always visible */
+.key-label--note-white {
+  font-size: clamp(0.5rem, 1vw, 0.7rem);
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.4);
+  letter-spacing: -0.02em;
 }
 
+.light .key-label--note-white {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Highlight C note labels */
+.key-label--c {
+  color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.white-key--active .key-label--note-white,
+.white-key--correct .key-label--note-white {
+  color: rgba(0, 220, 240, 0.9) !important;
+}
+
+/* Keyboard shortcut label on white key */
+.key-label--shortcut-white {
+  font-size: clamp(0.38rem, 0.8vw, 0.55rem);
+  color: rgba(0, 0, 0, 0.25);
+  font-weight: 400;
+}
+
+/* Black key label — note letter */
 .key-label--black {
-  font-size: 0.48rem;
-  color: rgba(255,255,255,0.35);
-  line-height: 1;
+  font-size: clamp(0.38rem, 0.75vw, 0.52rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.black-key--active .key-label--black,
+.black-key--correct .key-label--black {
+  color: rgba(0, 220, 240, 0.95) !important;
+}
+
+/* Keyboard shortcut on black key */
+.key-label--shortcut {
+  font-size: 0.38rem;
+  color: rgba(255, 255, 255, 0.25);
+  margin-top: 2px;
+}
+
+/* C note marker dot above C keys */
+.white-key--c::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.light .white-key--c::before {
+  background: rgba(0, 0, 0, 0.22);
 }
 
 /* ─── Tempo Control ──────────────────────────────────────────── */
@@ -1346,3 +1415,172 @@ body {
 .font-mono { font-family: 'Space Mono', monospace; }
 .text-accent-cyan { color: var(--cyan); }
 .text-accent-violet { color: var(--violet); }
+
+/* ─── Chord Info Panel ───────────────────────────────────────── */
+.chord-info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(7, 7, 10, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  min-width: 160px;
+  max-width: 220px;
+}
+
+.chord-info-current {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.chord-idle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Large chord name */
+.chord-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  line-height: 1.1;
+}
+
+.chord-root {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: -0.03em;
+}
+
+.chord-type {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Compact symbol line (e.g. "Cmaj7") */
+.chord-symbol {
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--cyan);
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+/* Note row: C – E – G */
+.chord-notes-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  margin-top: 0.1rem;
+}
+
+.chord-note-pill {
+  font-size: 0.7rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
+  line-height: 1.4;
+}
+
+.chord-note-sep {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  margin: 0 0.05rem;
+}
+
+/* Free-play active notes (no chord detected) */
+.chord-notes-free {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.active-note-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  color: var(--note-color, var(--cyan));
+  text-shadow: 0 0 10px var(--note-color, var(--cyan));
+  line-height: 1;
+}
+
+.active-note-oct {
+  font-size: 0.55rem;
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+/* ── Upcoming notes strip ─────────────────── */
+.chord-upcoming {
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.chord-upcoming-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+.chord-upcoming-notes {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* One beat / chord group */
+.upcoming-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.upcoming-note-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: rgba(var(--note-color, 0,240,255), 0.12);
+  border: 1px solid var(--note-color, rgba(0,240,255,0.3));
+  color: var(--note-color, var(--cyan));
+  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  padding: 0 4px;
+  /* fallback if CSS var isn't a valid color for background */
+  background-color: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.25);
+}
+
+.upcoming-hold {
+  font-size: 0.52rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
